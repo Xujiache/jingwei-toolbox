@@ -1,0 +1,24 @@
+{
+  "string": [
+    {
+      "name": "app_name",
+      "value": "经纬智能工具箱"
+    },
+    {
+      "name": "app_placeholder",
+      "value": "客户端框架已初始化，工具功能待接入"
+    },
+    {
+      "name": "module_desc",
+      "value": "经纬智能工具箱入口模块"
+    },
+    {
+      "name": "entry_ability_desc",
+      "value": "经纬智能工具箱主入口"
+    },
+    {
+      "name": "entry_ability_label",
+      "value": "经纬智能工具箱"
+    }
+  ]
+}
