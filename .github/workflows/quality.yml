@@ -1,0 +1,64 @@
+name: quality
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+permissions:
+  contents: read
+
+jobs:
+  contract:
+    name: API contract
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python scripts/verify-contract.py
+
+  backend:
+    name: Spring Boot skeleton
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+      - run: chmod +x backend/mvnw
+      - run: ./backend/mvnw -B -f backend/pom.xml test
+
+  admin:
+    name: Vue admin skeleton
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 12.3.4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: pnpm
+          cache-dependency-path: admin/pnpm-lock.yaml
+      - run: pnpm --dir admin install --frozen-lockfile
+      - run: pnpm --dir admin build
+
+  harmonyos-structure:
+    name: HarmonyOS structure
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check required project files
+        shell: bash
+        run: |
+          test -f app/build-profile.json5
+          test -f app/oh-package.json5
+          test -f app/entry/src/main/module.json5
+          test -f app/entry/src/main/ets/entryability/EntryAbility.ets
+          test -f app/entry/src/main/ets/pages/Index.ets

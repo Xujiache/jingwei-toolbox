@@ -5,9 +5,8 @@ dist-ssr
 *.local
 .cursorrules
 
-# Auto-generated files
-src/types/import/auto-imports.d.ts
-src/types/import/components.d.ts
+# Auto-generated runtime metadata. Type declaration files are committed so a clean
+# checkout can pass vue-tsc before Vite has run once.
 .auto-import.json
 
 # Kiro

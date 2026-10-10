@@ -8,17 +8,18 @@
 - 用户：个人用户
 - 客户端：HarmonyOS 手机和平板
 - 客户端技术：HarmonyOS 原生开发框架、ArkTS、ArkUI
-- 后端：Java + Spring Boot
+- 后端：Java 21 + Spring Boot 4.1.1
 - 数据库：MySQL 8
 - 管理后台：Vue 3（当前基础模板位于 `admin/`）
+- HarmonyOS 工程：Stage 模型，当前骨架按 API 12 / `5.0.0(12)` 初始化
 - GitHub：`https://github.com/Xujiache/jingwei-toolbox`
 - 分支：`main` 发布、`develop` 集成、`feature/*` 功能、`fix/*` 修复
 
 ### 当前不预先确定
 
 - 第一批具体工具及其业务规则
-- Spring Boot 具体版本、缓存、消息队列和部署平台
-- HarmonyOS API/SDK 版本、应用包名和正式签名
+- 缓存、消息队列和部署平台
+- HarmonyOS 应用正式签名和真机测试设备
 - 生产域名、数据库连接参数和监控平台
 
 这些项目不能用假数据或临时接口提前“占位完成”。确定后必须补充到本目录和环境配置说明。
@@ -114,7 +115,7 @@ scripts/   可重复的构建、检查和契约校验脚本
 ### 阶段 0：契约和骨架
 
 - 确认本目录文档、OpenAPI、错误码和认证方式。
-- 确认 Java、Spring Boot、MySQL 8、HarmonyOS SDK 和 Node/pnpm 工具链版本。
+- 校验 Java 21、Spring Boot 4.1.1、MySQL 8、HarmonyOS API 12 和 Node/pnpm 工具链版本。
 - 创建 `backend/`、`app/` 的最小工程骨架，但不实现具体工具。
 
 ### 阶段 1：平台基础能力
