@@ -30,3 +30,11 @@ logging:
   level:
     root: ${LOG_LEVEL_ROOT:INFO}
     com.xujiache.jingweitoolbox: ${LOG_LEVEL_APP:INFO}
+
+app:
+  auth:
+    # HS256 签名密钥，生产环境必须通过环境变量提供不少于 32 字节的随机值
+    jwt-secret: ${JWT_SECRET:dev-only-secret-key-change-me-0123456789abcdef}
+    access-token-ttl-minutes: ${JWT_ACCESS_TTL_MINUTES:120}
+    refresh-token-ttl-days: ${JWT_REFRESH_TTL_DAYS:14}
+    guest-session-ttl-hours: ${GUEST_SESSION_TTL_HOURS:24}
