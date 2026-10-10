@@ -20,3 +20,6 @@ export * from './router'
 
 /** 配置相关类型定义 */
 export * from './config'
+
+/** OpenAPI 平台契约类型 */
+export * from './api/contract'

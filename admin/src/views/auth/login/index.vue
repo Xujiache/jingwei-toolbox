@@ -96,8 +96,8 @@
   const formRef = ref<FormInstance>()
 
   const formData = reactive({
-    username: 'Super',
-    password: '123456',
+    username: '',
+    password: '',
     rememberPassword: true
   })
 

@@ -3,6 +3,10 @@
     {
       "name": "app_background",
       "value": "#F7F8FA"
+    },
+    {
+      "name": "secondary_text",
+      "value": "#667085"
     }
   ]
 }

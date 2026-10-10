@@ -20,6 +20,8 @@ import { ApiStatus } from './status'
 import { HttpError, handleError, showError, showSuccess } from './error'
 import { $t } from '@/locales'
 import { BaseResponse } from '@/types'
+import type { ApiErrorResponse, ApiResponse } from '@/types/api/contract'
+import { runtimeConfig } from '@/config/runtime'
 
 /** 请求配置常量 */
 const REQUEST_TIMEOUT = 15000
@@ -38,13 +40,22 @@ interface ExtendedAxiosRequestConfig extends AxiosRequestConfig {
   showSuccessMessage?: boolean
 }
 
-const { VITE_API_URL, VITE_WITH_CREDENTIALS } = import.meta.env
+type HttpResponse<T = unknown> = BaseResponse<T> | ApiResponse<T> | ApiErrorResponse
+
+function isContractResponse<T>(body: HttpResponse<T>): body is ApiResponse<T> | ApiErrorResponse {
+  return typeof body?.code === 'string' && 'message' in body
+}
+
+function responseMessage(body: HttpResponse<unknown>): string | undefined {
+  if (isContractResponse(body)) return body.message
+  return body.msg
+}
 
 /** Axios实例 */
 const axiosInstance = axios.create({
   timeout: REQUEST_TIMEOUT,
-  baseURL: VITE_API_URL,
-  withCredentials: VITE_WITH_CREDENTIALS === 'true',
+  baseURL: runtimeConfig.apiBaseUrl,
+  withCredentials: runtimeConfig.withCredentials,
   validateStatus: (status) => status >= 200 && status < 300,
   transformResponse: [
     (data, headers) => {
@@ -65,7 +76,12 @@ const axiosInstance = axios.create({
 axiosInstance.interceptors.request.use(
   (request: InternalAxiosRequestConfig) => {
     const { accessToken } = useUserStore()
-    if (accessToken) request.headers.set('Authorization', accessToken)
+    if (accessToken) {
+      const authorization = accessToken.startsWith('Bearer ')
+        ? accessToken
+        : `Bearer ${accessToken}`
+      request.headers.set('Authorization', authorization)
+    }
 
     if (request.data && !(request.data instanceof FormData) && !request.headers['Content-Type']) {
       request.headers.set('Content-Type', 'application/json')
@@ -82,11 +98,19 @@ axiosInstance.interceptors.request.use(
 
 /** 响应拦截器 */
 axiosInstance.interceptors.response.use(
-  (response: AxiosResponse<BaseResponse>) => {
-    const { code, msg } = response.data
-    if (code === ApiStatus.success) return response
-    if (code === ApiStatus.unauthorized) handleUnauthorizedError(msg)
-    throw createHttpError(msg || $t('httpMsg.requestFailed'), code)
+  (response: AxiosResponse<HttpResponse>) => {
+    const body = response.data
+    if (!body || typeof body !== 'object') return response
+
+    if (isContractResponse(body)) {
+      if (body.code === 'OK') return response
+      if (body.code === 'UNAUTHENTICATED') handleUnauthorizedError(body.message)
+      throw createHttpError(body.message || $t('httpMsg.requestFailed'), body.code)
+    }
+
+    if (body.code === ApiStatus.success) return response
+    if (body.code === ApiStatus.unauthorized) handleUnauthorizedError(body.msg)
+    throw createHttpError(body.msg || $t('httpMsg.requestFailed'), body.code)
   },
   (error) => {
     if (error.response?.status === ApiStatus.unauthorized) handleUnauthorizedError()
@@ -95,7 +119,7 @@ axiosInstance.interceptors.response.use(
 )
 
 /** 统一创建HttpError */
-function createHttpError(message: string, code: number) {
+function createHttpError(message: string, code: number | string) {
   return new HttpError(message, code)
 }
 
@@ -131,7 +155,9 @@ function logOut() {
 }
 
 /** 是否需要重试 */
-function shouldRetry(statusCode: number) {
+function shouldRetry(statusCode: number | string) {
+  if (typeof statusCode !== 'number') return false
+
   return [
     ApiStatus.requestTimeout,
     ApiStatus.internalServerError,
@@ -175,14 +201,19 @@ async function request<T = any>(config: ExtendedAxiosRequestConfig): Promise<T> 
   }
 
   try {
-    const res = await axiosInstance.request<BaseResponse<T>>(config)
+    const res = await axiosInstance.request<HttpResponse<T>>(config)
 
-    // 显示成功消息
-    if (config.showSuccessMessage && res.data.msg) {
-      showSuccess(res.data.msg)
+    if (!res.data || typeof res.data !== 'object' || res.status === 204) {
+      return undefined as T
     }
 
-    return res.data.data as T
+    // 显示成功消息
+    const message = responseMessage(res.data)
+    if (config.showSuccessMessage && message) {
+      showSuccess(message)
+    }
+
+    return 'data' in res.data ? (res.data.data as T) : (undefined as T)
   } catch (error) {
     if (error instanceof HttpError && error.code !== ApiStatus.unauthorized) {
       const showMsg = config.showErrorMessage !== false

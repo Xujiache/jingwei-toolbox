@@ -8,7 +8,7 @@
 
 - `app/`：HarmonyOS Stage 模型客户端骨架
 - `backend/`：Java 21 + Spring Boot 4.1.1 后端骨架
-- `admin/`：Vue 3 管理后台模板
+- `admin/`：Vue 3 管理后台基础框架（运行时配置、OpenAPI 类型和平台请求边界）
 - `docs/`：项目规划、接口契约和两人协作规则
 - `infra/`：本地 MySQL 8 开发环境
 - `scripts/`：契约和基础校验脚本

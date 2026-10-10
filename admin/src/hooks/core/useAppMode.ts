@@ -19,7 +19,8 @@ import { computed } from 'vue'
 
 export function useAppMode() {
   // 获取访问模式配置
-  const accessMode = import.meta.env.VITE_ACCESS_MODE
+  // 新工程默认使用前端静态路由，接入后端菜单前必须显式配置 backend。
+  const accessMode = import.meta.env.VITE_ACCESS_MODE || 'frontend'
 
   /**
    * 是否为前端控制模式

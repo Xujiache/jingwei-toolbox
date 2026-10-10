@@ -28,17 +28,20 @@ import { $t } from '@/locales'
 // 错误响应接口
 export interface ErrorResponse {
   /** 错误状态码 */
-  code: number
+  code: number | string
   /** 错误消息 */
-  msg: string
+  msg?: string
+  message?: string
   /** 错误附加数据 */
   data?: unknown
+  details?: Record<string, unknown>
+  requestId?: string
 }
 
 // 错误日志数据接口
 export interface ErrorLogData {
   /** 错误状态码 */
-  code: number
+  code: number | string
   /** 错误消息 */
   message: string
   /** 错误附加数据 */
@@ -55,7 +58,7 @@ export interface ErrorLogData {
 
 // 自定义 HttpError 类
 export class HttpError extends Error {
-  public readonly code: number
+  public readonly code: number | string
   public readonly data?: unknown
   public readonly timestamp: string
   public readonly url?: string
@@ -63,7 +66,7 @@ export class HttpError extends Error {
 
   constructor(
     message: string,
-    code: number,
+    code: number | string,
     options?: {
       data?: unknown
       url?: string
@@ -126,7 +129,7 @@ export function handleError(error: AxiosError<ErrorResponse>): never {
   }
 
   const statusCode = error.response?.status
-  const errorMessage = error.response?.data?.msg || error.message
+  const errorMessage = error.response?.data?.message || error.response?.data?.msg || error.message
   const requestConfig = error.config
 
   // 处理网络错误
