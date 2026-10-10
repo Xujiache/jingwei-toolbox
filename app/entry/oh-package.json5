@@ -1,8 +1,0 @@
-{
-  "modelVersion": "5.0.0",
-  "name": "@jingwei/toolbox-entry",
-  "version": "0.0.1",
-  "description": "经纬智能工具箱入口模块",
-  "main": "Index.ets",
-  "dependencies": {}
-}
