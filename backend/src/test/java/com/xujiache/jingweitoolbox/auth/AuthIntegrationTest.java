@@ -73,13 +73,13 @@ class AuthIntegrationTest {
     }
 
     @Test
-    void 种子管理员可登录并到达admin接口() throws Exception {
+    void 种子管理员可登录并访问admin接口() throws Exception {
         String token = adminAccessToken();
 
-        // M3 阶段 admin 接口尚无控制器，能到达分发（404 NOT_FOUND）即证明授权链路通过；M4 落地后此断言升级为 200
         mockMvc.perform(get("/api/v1/admin/tools").header("Authorization", "Bearer " + token))
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.code").value("NOT_FOUND"));
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value("OK"))
+                .andExpect(jsonPath("$.data.items").isArray());
     }
 
     @Test
