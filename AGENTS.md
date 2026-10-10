@@ -21,7 +21,7 @@
 ### 已确定技术栈
 
 - 客户端：HarmonyOS 原生开发框架，ArkTS + ArkUI；目标设备为 HarmonyOS 手机和平板。
-- 后端：Java + Spring Boot；数据库：MySQL 8。具体 Spring Boot 版本、缓存和部署方式在实现前确认。
+- 后端：Java 21 + Spring Boot 4.1.1；数据库：MySQL 8。缓存和部署方式在业务实现前确认。
 - 管理后台：Vue 3；当前模板目录为 `admin/`。
 
 ### 推荐目录
@@ -101,7 +101,7 @@ AI 在修改前必须：
 
 ## 9. 当前待确认项
 
-- Spring Boot 的具体版本、缓存和部署方式。
-- HarmonyOS API/SDK 版本、包名、签名和真机测试设备。
+- 缓存和部署方式。
+- HarmonyOS 正式签名和真机测试设备；当前骨架按 Stage 模型、API 12（`5.0.0(12)`）初始化。
 - GitHub 公开仓库：`https://github.com/Xujiache/jingwei-toolbox`；`main` 和 `develop` 已确定启用。
-- 双方具体职责划分仍待确认。
+- 分工已暂定为开发者 A 负责后端，开发者 B 负责 HarmonyOS 客户端和 Vue 3 管理后台，具体姓名映射仍待确认。
