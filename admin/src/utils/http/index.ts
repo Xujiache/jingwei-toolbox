@@ -38,6 +38,9 @@ let unauthorizedTimer: NodeJS.Timeout | null = null
 interface ExtendedAxiosRequestConfig extends AxiosRequestConfig {
   showErrorMessage?: boolean
   showSuccessMessage?: boolean
+  /** 401 重试刷新令牌时禁止再次进入刷新分支。 */
+  skipAuthRefresh?: boolean
+  _authRetry?: boolean
 }
 
 type HttpResponse<T = unknown> = BaseResponse<T> | ApiResponse<T> | ApiErrorResponse
@@ -71,6 +74,41 @@ const axiosInstance = axios.create({
     }
   ]
 })
+
+let refreshPromise: Promise<boolean> | null = null
+
+/**
+ * 使用轮换刷新令牌获取新的访问令牌。
+ * 所有并发 401 请求共享同一个 Promise，避免重复消费 refresh token。
+ */
+async function refreshAccessToken(): Promise<boolean> {
+  const userStore = useUserStore()
+  if (!userStore.refreshToken) return false
+  if (refreshPromise) return refreshPromise
+
+  refreshPromise = axiosInstance
+    .post<HttpResponse<{ accessToken: string; refreshToken?: string }>>(
+      '/auth/refresh',
+      { refreshToken: userStore.refreshToken },
+      { skipAuthRefresh: true } as ExtendedAxiosRequestConfig
+    )
+    .then((response) => {
+      const body = response.data
+      if (!isContractResponse(body) || body.code !== 'OK' || !('data' in body)) return false
+      const auth = body.data
+      if (!auth || typeof auth.accessToken !== 'string' || auth.accessToken.length === 0) {
+        return false
+      }
+      userStore.setToken(auth.accessToken, auth.refreshToken)
+      return true
+    })
+    .catch(() => false)
+    .finally(() => {
+      refreshPromise = null
+    })
+
+  return refreshPromise
+}
 
 /** 请求拦截器 */
 axiosInstance.interceptors.request.use(
@@ -112,8 +150,21 @@ axiosInstance.interceptors.response.use(
     if (body.code === ApiStatus.unauthorized) handleUnauthorizedError(body.msg)
     throw createHttpError(body.msg || $t('httpMsg.requestFailed'), body.code)
   },
-  (error) => {
-    if (error.response?.status === ApiStatus.unauthorized) handleUnauthorizedError()
+  async (error) => {
+    const requestConfig = error.config as ExtendedAxiosRequestConfig | undefined
+    if (
+      error.response?.status === ApiStatus.unauthorized &&
+      requestConfig &&
+      !requestConfig.skipAuthRefresh &&
+      !requestConfig._authRetry
+    ) {
+      const refreshed = await refreshAccessToken()
+      if (refreshed) {
+        requestConfig._authRetry = true
+        return axiosInstance.request(requestConfig)
+      }
+      handleUnauthorizedError()
+    }
     return Promise.reject(handleError(error))
   }
 )

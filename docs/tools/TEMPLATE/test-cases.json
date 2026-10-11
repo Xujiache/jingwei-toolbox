@@ -1,0 +1,20 @@
+[
+  {
+    "name": "valid-input",
+    "kind": "success",
+    "input": { "value": "hello" },
+    "expectedError": null
+  },
+  {
+    "name": "invalid-input",
+    "kind": "validation",
+    "input": {},
+    "expectedError": "TOOL_INPUT_INVALID"
+  },
+  {
+    "name": "idempotent-replay",
+    "kind": "idempotency",
+    "clientRequestId": "same-id-twice",
+    "expectedError": null
+  }
+]

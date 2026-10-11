@@ -1,0 +1,12 @@
+[
+  {
+    "code": "EXAMPLE_TOOL_INVALID_INPUT",
+    "httpStatus": 400,
+    "message": "工具输入不合法"
+  },
+  {
+    "code": "EXAMPLE_TOOL_DEPENDENCY_ERROR",
+    "httpStatus": 502,
+    "message": "工具依赖服务失败"
+  }
+]

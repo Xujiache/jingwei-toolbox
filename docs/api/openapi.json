@@ -12,79 +12,209 @@
     }
   ],
   "tags": [
-    { "name": "Auth", "description": "登录和游客会话" },
-    { "name": "Me", "description": "当前身份" },
-    { "name": "Tools", "description": "客户端工具目录和执行" },
-    { "name": "AdminTools", "description": "管理后台工具和策略" }
+    {
+      "name": "Auth",
+      "description": "登录和游客会话"
+    },
+    {
+      "name": "Me",
+      "description": "当前身份"
+    },
+    {
+      "name": "Media",
+      "description": "头像等公开媒体资源"
+    },
+    {
+      "name": "Tools",
+      "description": "客户端工具目录和执行"
+    },
+    {
+      "name": "AdminTools",
+      "description": "管理后台工具和策略"
+    }
   ],
   "paths": {
     "/api/v1/auth/guest-session": {
       "post": {
-        "tags": ["Auth"],
+        "tags": [
+          "Auth"
+        ],
         "operationId": "createGuestSession",
         "summary": "创建游客会话",
         "responses": {
           "200": {
             "$ref": "#/components/responses/AuthSuccess"
           },
-          "500": { "$ref": "#/components/responses/InternalError" }
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          }
+        }
+      }
+    },
+    "/api/v1/auth/register": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "operationId": "register",
+        "summary": "公开注册",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/AuthSuccess"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "409": {
+            "$ref": "#/components/responses/ResourceConflict"
+          }
         }
       }
     },
     "/api/v1/auth/login": {
       "post": {
-        "tags": ["Auth"],
+        "tags": [
+          "Auth"
+        ],
         "operationId": "login",
         "summary": "用户登录",
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
-              "schema": { "$ref": "#/components/schemas/LoginRequest" }
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequest"
+              }
             }
           }
         },
         "responses": {
-          "200": { "$ref": "#/components/responses/AuthSuccess" },
-          "400": { "$ref": "#/components/responses/BadRequest" },
-          "401": { "$ref": "#/components/responses/Unauthenticated" }
+          "200": {
+            "$ref": "#/components/responses/AuthSuccess"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthenticated"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          }
+        }
+      }
+    },
+    "/api/v1/auth/huawei": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "operationId": "loginWithHuaweiAuthorizationCode",
+        "summary": "使用华为账号授权码登录或注册",
+        "description": "客户端只提交一次性 authorizationCode；服务端使用部署环境中的 Client Secret 换取身份，不保存上游令牌。",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HuaweiLoginRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/AuthSuccess"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthenticated"
+          },
+          "409": {
+            "$ref": "#/components/responses/ResourceConflict"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          }
         }
       }
     },
     "/api/v1/auth/refresh": {
       "post": {
-        "tags": ["Auth"],
+        "tags": [
+          "Auth"
+        ],
         "operationId": "refreshSession",
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
-              "schema": { "$ref": "#/components/schemas/RefreshRequest" }
+              "schema": {
+                "$ref": "#/components/schemas/RefreshRequest"
+              }
             }
           }
         },
         "responses": {
-          "200": { "$ref": "#/components/responses/AuthSuccess" },
-          "401": { "$ref": "#/components/responses/Unauthenticated" }
+          "200": {
+            "$ref": "#/components/responses/AuthSuccess"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthenticated"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          }
         }
       }
     },
     "/api/v1/auth/logout": {
       "post": {
-        "tags": ["Auth"],
+        "tags": [
+          "Auth"
+        ],
         "operationId": "logout",
-        "security": [{ "bearerAuth": [] }],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "responses": {
-          "204": { "description": "会话已失效" },
-          "401": { "$ref": "#/components/responses/Unauthenticated" }
+          "204": {
+            "description": "会话已失效"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthenticated"
+          }
         }
       }
     },
     "/api/v1/me": {
       "get": {
-        "tags": ["Me"],
+        "tags": [
+          "Me"
+        ],
         "operationId": "getCurrentPrincipal",
-        "security": [{ "bearerAuth": [] }],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "responses": {
           "200": {
             "description": "当前身份",
@@ -96,13 +226,51 @@
               }
             }
           },
-          "401": { "$ref": "#/components/responses/Unauthenticated" }
+          "401": {
+            "$ref": "#/components/responses/Unauthenticated"
+          }
+        }
+      }
+    },
+    "/api/v1/media/avatars/{storageKey}": {
+      "get": {
+        "tags": [
+          "Media"
+        ],
+        "operationId": "getHuaweiAvatar",
+        "summary": "读取服务端持久化头像",
+        "parameters": [
+          {
+            "name": "storageKey",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{32}$"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "头像图片",
+            "content": {
+              "image/jpeg": {},
+              "image/png": {},
+              "image/gif": {},
+              "image/webp": {}
+            }
+          },
+          "404": {
+            "description": "头像不存在"
+          }
         }
       }
     },
     "/api/v1/tools": {
       "get": {
-        "tags": ["Tools"],
+        "tags": [
+          "Tools"
+        ],
         "operationId": "listTools",
         "parameters": [
           {
@@ -114,7 +282,9 @@
           {
             "name": "status",
             "in": "query",
-            "schema": { "$ref": "#/components/schemas/ToolStatus" }
+            "schema": {
+              "$ref": "#/components/schemas/ToolStatus"
+            }
           }
         ],
         "responses": {
@@ -133,33 +303,55 @@
     },
     "/api/v1/tools/{toolId}": {
       "get": {
-        "tags": ["Tools"],
+        "tags": [
+          "Tools"
+        ],
         "operationId": "getTool",
-        "parameters": [{ "$ref": "#/components/parameters/ToolId" }],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ToolId"
+          }
+        ],
         "responses": {
           "200": {
             "description": "工具详情",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/ToolResponse" }
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResponse"
+                }
               }
             }
           },
-          "404": { "$ref": "#/components/responses/ToolNotFound" }
+          "404": {
+            "$ref": "#/components/responses/ToolNotFound"
+          }
         }
       }
     },
     "/api/v1/tools/{toolId}/execute": {
       "post": {
-        "tags": ["Tools"],
+        "tags": [
+          "Tools"
+        ],
         "operationId": "executeTool",
-        "security": [{ "bearerAuth": [] }],
-        "parameters": [{ "$ref": "#/components/parameters/ToolId" }],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ToolId"
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
-              "schema": { "$ref": "#/components/schemas/ToolExecuteRequest" }
+              "schema": {
+                "$ref": "#/components/schemas/ToolExecuteRequest"
+              }
             }
           }
         },
@@ -168,47 +360,89 @@
             "description": "工具执行结果",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/ToolExecuteResponse" }
+                "schema": {
+                  "$ref": "#/components/schemas/ToolExecuteResponse"
+                }
               }
             }
           },
-          "400": { "$ref": "#/components/responses/BadRequest" },
-          "401": { "$ref": "#/components/responses/Unauthenticated" },
-          "403": { "$ref": "#/components/responses/Forbidden" },
-          "404": { "$ref": "#/components/responses/ToolNotFound" },
-          "409": { "$ref": "#/components/responses/IdempotencyConflict" },
-          "429": { "$ref": "#/components/responses/QuotaExceeded" },
-          "502": { "$ref": "#/components/responses/DependencyError" }
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthenticated"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/ToolNotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/IdempotencyConflict"
+          },
+          "429": {
+            "$ref": "#/components/responses/QuotaExceeded"
+          },
+          "502": {
+            "$ref": "#/components/responses/DependencyError"
+          },
+          "501": {
+            "$ref": "#/components/responses/ToolNotImplemented"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          }
         }
       }
     },
     "/api/v1/admin/tools": {
       "get": {
-        "tags": ["AdminTools"],
+        "tags": [
+          "AdminTools"
+        ],
         "operationId": "adminListTools",
-        "security": [{ "bearerAuth": [] }],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "responses": {
           "200": {
             "description": "后台工具列表",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/ToolListResponse" }
+                "schema": {
+                  "$ref": "#/components/schemas/ToolListResponse"
+                }
               }
             }
           },
-          "401": { "$ref": "#/components/responses/Unauthenticated" },
-          "403": { "$ref": "#/components/responses/Forbidden" }
+          "401": {
+            "$ref": "#/components/responses/Unauthenticated"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
         }
       },
       "post": {
-        "tags": ["AdminTools"],
+        "tags": [
+          "AdminTools"
+        ],
         "operationId": "adminCreateTool",
-        "security": [{ "bearerAuth": [] }],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
-              "schema": { "$ref": "#/components/schemas/ToolUpsertRequest" }
+              "schema": {
+                "$ref": "#/components/schemas/ToolUpsertRequest"
+              }
             }
           }
         },
@@ -217,28 +451,50 @@
             "description": "工具已创建",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/ToolResponse" }
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResponse"
+                }
               }
             }
           },
-          "400": { "$ref": "#/components/responses/BadRequest" },
-          "401": { "$ref": "#/components/responses/Unauthenticated" },
-          "403": { "$ref": "#/components/responses/Forbidden" },
-          "409": { "$ref": "#/components/responses/ResourceConflict" }
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthenticated"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "409": {
+            "$ref": "#/components/responses/ResourceConflict"
+          }
         }
       }
     },
     "/api/v1/admin/tools/{toolId}": {
       "patch": {
-        "tags": ["AdminTools"],
+        "tags": [
+          "AdminTools"
+        ],
         "operationId": "adminUpdateTool",
-        "security": [{ "bearerAuth": [] }],
-        "parameters": [{ "$ref": "#/components/parameters/ToolId" }],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ToolId"
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
-              "schema": { "$ref": "#/components/schemas/ToolPatchRequest" }
+              "schema": {
+                "$ref": "#/components/schemas/ToolPatchRequest"
+              }
             }
           }
         },
@@ -247,28 +503,50 @@
             "description": "工具已更新",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/ToolResponse" }
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResponse"
+                }
               }
             }
           },
-          "401": { "$ref": "#/components/responses/Unauthenticated" },
-          "403": { "$ref": "#/components/responses/Forbidden" },
-          "404": { "$ref": "#/components/responses/ToolNotFound" },
-          "409": { "$ref": "#/components/responses/ResourceConflict" }
+          "401": {
+            "$ref": "#/components/responses/Unauthenticated"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/ToolNotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/ResourceConflict"
+          }
         }
       }
     },
     "/api/v1/admin/tools/{toolId}/policy": {
       "patch": {
-        "tags": ["AdminTools"],
+        "tags": [
+          "AdminTools"
+        ],
         "operationId": "adminUpdateToolPolicy",
-        "security": [{ "bearerAuth": [] }],
-        "parameters": [{ "$ref": "#/components/parameters/ToolId" }],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ToolId"
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
-              "schema": { "$ref": "#/components/schemas/ToolPolicyPatch" }
+              "schema": {
+                "$ref": "#/components/schemas/ToolPolicyPatch"
+              }
             }
           }
         },
@@ -277,39 +555,373 @@
             "description": "策略已更新",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/ToolResponse" }
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResponse"
+                }
               }
             }
           },
-          "401": { "$ref": "#/components/responses/Unauthenticated" },
-          "403": { "$ref": "#/components/responses/Forbidden" },
-          "404": { "$ref": "#/components/responses/ToolNotFound" },
-          "409": { "$ref": "#/components/responses/ResourceConflict" }
+          "401": {
+            "$ref": "#/components/responses/Unauthenticated"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/ToolNotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/ResourceConflict"
+          }
+        }
+      }
+    },
+    "/api/v1/admin/tools/{toolId}/versions": {
+      "get": {
+        "tags": [
+          "AdminTools"
+        ],
+        "operationId": "adminListToolVersions",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ToolId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "工具版本列表",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolVersionListResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthenticated"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "AdminTools"
+        ],
+        "operationId": "adminCreateToolVersion",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ToolId"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ToolVersionCreateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "版本已创建",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolVersionResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthenticated"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "409": {
+            "$ref": "#/components/responses/ResourceConflict"
+          }
+        }
+      }
+    },
+    "/api/v1/admin/tools/{toolId}/versions/{version}/testing": {
+      "post": {
+        "tags": [
+          "AdminTools"
+        ],
+        "operationId": "adminTestToolVersion",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ToolId"
+          },
+          {
+            "$ref": "#/components/parameters/ToolVersionPath"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "版本已进入测试",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolVersionResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthenticated"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
+        }
+      }
+    },
+    "/api/v1/admin/tools/{toolId}/versions/{version}/publish": {
+      "post": {
+        "tags": [
+          "AdminTools"
+        ],
+        "operationId": "adminPublishToolVersion",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ToolId"
+          },
+          {
+            "$ref": "#/components/parameters/ToolVersionPath"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "版本已发布",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolVersionResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthenticated"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "409": {
+            "$ref": "#/components/responses/ResourceConflict"
+          }
+        }
+      }
+    },
+    "/api/v1/admin/tools/{toolId}/versions/{version}/rollback": {
+      "post": {
+        "tags": [
+          "AdminTools"
+        ],
+        "operationId": "adminRollbackToolVersion",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ToolId"
+          },
+          {
+            "$ref": "#/components/parameters/ToolVersionPath"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "版本已回滚",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolVersionResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthenticated"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "409": {
+            "$ref": "#/components/responses/ResourceConflict"
+          }
+        }
+      }
+    },
+    "/api/v1/admin/tools/{toolId}/access-policy/{principalType}": {
+      "get": {
+        "tags": [
+          "AdminTools"
+        ],
+        "operationId": "adminGetToolAccessPolicy",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ToolId"
+          },
+          {
+            "$ref": "#/components/parameters/PrincipalTypePath"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "访问策略",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolAccessPolicyResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthenticated"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/ToolNotFound"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "AdminTools"
+        ],
+        "operationId": "adminUpdateToolAccessPolicy",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ToolId"
+          },
+          {
+            "$ref": "#/components/parameters/PrincipalTypePath"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ToolAccessPolicyPatch"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "访问策略已更新",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolAccessPolicyResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthenticated"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "409": {
+            "$ref": "#/components/responses/ResourceConflict"
+          }
         }
       }
     },
     "/api/v1/admin/tools/{toolId}/usage": {
       "get": {
-        "tags": ["AdminTools"],
+        "tags": [
+          "AdminTools"
+        ],
         "operationId": "adminGetToolUsage",
-        "security": [{ "bearerAuth": [] }],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "parameters": [
-          { "$ref": "#/components/parameters/ToolId" },
-          { "$ref": "#/components/parameters/From" },
-          { "$ref": "#/components/parameters/To" }
+          {
+            "$ref": "#/components/parameters/ToolId"
+          },
+          {
+            "$ref": "#/components/parameters/From"
+          },
+          {
+            "$ref": "#/components/parameters/To"
+          }
         ],
         "responses": {
           "200": {
             "description": "工具使用量",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/UsageResponse" }
+                "schema": {
+                  "$ref": "#/components/schemas/UsageResponse"
+                }
               }
             }
           },
-          "401": { "$ref": "#/components/responses/Unauthenticated" },
-          "403": { "$ref": "#/components/responses/Forbidden" },
-          "404": { "$ref": "#/components/responses/ToolNotFound" }
+          "401": {
+            "$ref": "#/components/responses/Unauthenticated"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/ToolNotFound"
+          }
         }
       }
     }
@@ -327,254 +939,971 @@
         "name": "toolId",
         "in": "path",
         "required": true,
-        "schema": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" }
+        "schema": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+        }
+      },
+      "ToolVersionPath": {
+        "name": "version",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "pattern": "^\\d+\\.\\d+\\.\\d+(?:-[0-9A-Za-z.-]+)?$"
+        }
+      },
+      "PrincipalTypePath": {
+        "name": "principalType",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "enum": [
+            "GUEST",
+            "USER",
+            "MEMBER",
+            "AD_REWARDED"
+          ]
+        }
       },
       "Page": {
         "name": "page",
         "in": "query",
-        "schema": { "type": "integer", "minimum": 1, "default": 1 }
+        "schema": {
+          "type": "integer",
+          "minimum": 1,
+          "default": 1
+        }
       },
       "PageSize": {
         "name": "pageSize",
         "in": "query",
-        "schema": { "type": "integer", "minimum": 1, "maximum": 100, "default": 20 }
+        "schema": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100,
+          "default": 20
+        }
       },
       "From": {
         "name": "from",
         "in": "query",
-        "schema": { "type": "string", "format": "date-time" }
+        "schema": {
+          "type": "string",
+          "format": "date-time"
+        }
       },
       "To": {
         "name": "to",
         "in": "query",
-        "schema": { "type": "string", "format": "date-time" }
+        "schema": {
+          "type": "string",
+          "format": "date-time"
+        }
       }
     },
     "schemas": {
       "LoginRequest": {
         "type": "object",
-        "required": ["identifier", "password"],
+        "required": [
+          "identifier",
+          "password"
+        ],
         "properties": {
-          "identifier": { "type": "string", "minLength": 1, "maxLength": 128 },
-          "password": { "type": "string", "minLength": 1, "maxLength": 256, "writeOnly": true }
+          "identifier": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "password": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256,
+            "writeOnly": true
+          }
         },
         "additionalProperties": false
       },
       "RefreshRequest": {
         "type": "object",
-        "required": ["refreshToken"],
+        "required": [
+          "refreshToken"
+        ],
         "properties": {
-          "refreshToken": { "type": "string", "minLength": 1, "writeOnly": true }
+          "refreshToken": {
+            "type": "string",
+            "minLength": 1,
+            "writeOnly": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "HuaweiLoginRequest": {
+        "type": "object",
+        "required": [
+          "authorizationCode"
+        ],
+        "properties": {
+          "authorizationCode": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4096,
+            "writeOnly": true
+          }
         },
         "additionalProperties": false
       },
       "AuthData": {
         "type": "object",
-        "required": ["accessToken", "tokenType", "expiresAt", "principalType"],
+        "required": [
+          "accessToken",
+          "tokenType",
+          "expiresAt",
+          "principalType"
+        ],
         "properties": {
-          "accessToken": { "type": "string", "writeOnly": true },
-          "refreshToken": { "type": "string", "writeOnly": true },
-          "tokenType": { "type": "string", "const": "Bearer" },
-          "expiresAt": { "type": "string", "format": "date-time" },
-          "principalType": { "type": "string", "enum": ["GUEST", "USER", "ADMIN"] }
+          "accessToken": {
+            "type": "string",
+            "writeOnly": true
+          },
+          "refreshToken": {
+            "type": "string",
+            "writeOnly": true
+          },
+          "tokenType": {
+            "type": "string",
+            "const": "Bearer"
+          },
+          "expiresAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "principalType": {
+            "type": "string",
+            "enum": [
+              "GUEST",
+              "USER",
+              "ADMIN"
+            ]
+          }
         }
       },
       "LoginResponse": {
         "type": "object",
-        "required": ["code", "message", "data", "requestId"],
+        "required": [
+          "code",
+          "message",
+          "data",
+          "requestId"
+        ],
         "properties": {
-          "code": { "type": "string", "const": "OK" },
-          "message": { "type": "string" },
-          "data": { "$ref": "#/components/schemas/AuthData" },
-          "requestId": { "type": "string" }
+          "code": {
+            "type": "string",
+            "const": "OK"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/AuthData"
+          },
+          "requestId": {
+            "type": "string"
+          }
         }
       },
       "PrincipalResponse": {
         "type": "object",
-        "required": ["code", "message", "data", "requestId"],
+        "required": [
+          "code",
+          "message",
+          "data",
+          "requestId"
+        ],
         "properties": {
-          "code": { "type": "string", "const": "OK" },
-          "message": { "type": "string" },
+          "code": {
+            "type": "string",
+            "const": "OK"
+          },
+          "message": {
+            "type": "string"
+          },
           "data": {
             "type": "object",
-            "required": ["principalType"],
+            "required": [
+              "principalType"
+            ],
             "properties": {
-              "principalType": { "type": "string", "enum": ["GUEST", "USER", "ADMIN"] },
-              "userId": { "type": ["string", "null"] },
-              "displayName": { "type": ["string", "null"] },
-              "scopes": { "type": "array", "items": { "type": "string" } }
+              "principalType": {
+                "type": "string",
+                "enum": [
+                  "GUEST",
+                  "USER",
+                  "ADMIN"
+                ]
+              },
+              "userId": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "displayName": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "avatarUri": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "format": "uri-reference"
+              },
+              "scopes": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
             }
           },
-          "requestId": { "type": "string" }
+          "requestId": {
+            "type": "string"
+          }
         }
       },
       "ToolStatus": {
         "type": "string",
-        "enum": ["DRAFT", "PUBLISHED", "DISABLED", "DEPRECATED"]
+        "enum": [
+          "DRAFT",
+          "PUBLISHED",
+          "DISABLED",
+          "DEPRECATED"
+        ]
+      },
+      "ToolVersionStatus": {
+        "type": "string",
+        "enum": [
+          "DRAFT",
+          "TESTING",
+          "PUBLISHED",
+          "DISABLED",
+          "DEPRECATED"
+        ]
+      },
+      "ToolVersion": {
+        "type": "object",
+        "required": [
+          "toolId",
+          "toolVersion",
+          "status",
+          "executorKey",
+          "timeoutMs"
+        ],
+        "properties": {
+          "toolId": {
+            "type": "string"
+          },
+          "toolVersion": {
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/ToolVersionStatus"
+          },
+          "inputSchema": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "outputSchema": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "executorKey": {
+            "type": "string"
+          },
+          "timeoutMs": {
+            "type": "integer",
+            "minimum": 100,
+            "maximum": 300000
+          },
+          "minClientVersion": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "ToolVersionCreateRequest": {
+        "type": "object",
+        "required": [
+          "toolVersion"
+        ],
+        "properties": {
+          "toolVersion": {
+            "type": "string"
+          },
+          "inputSchema": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "outputSchema": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "executorKey": {
+            "type": "string"
+          },
+          "timeoutMs": {
+            "type": "integer",
+            "minimum": 100,
+            "maximum": 300000
+          },
+          "minClientVersion": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ToolVersionResponse": {
+        "type": "object",
+        "required": [
+          "code",
+          "message",
+          "data",
+          "requestId"
+        ],
+        "properties": {
+          "code": {
+            "type": "string",
+            "const": "OK"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/ToolVersion"
+          },
+          "requestId": {
+            "type": "string"
+          }
+        }
+      },
+      "ToolVersionListResponse": {
+        "type": "object",
+        "required": [
+          "code",
+          "message",
+          "data",
+          "requestId"
+        ],
+        "properties": {
+          "code": {
+            "type": "string",
+            "const": "OK"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ToolVersion"
+            }
+          },
+          "requestId": {
+            "type": "string"
+          }
+        }
+      },
+      "ToolAccessPolicyPatch": {
+        "type": "object",
+        "required": [
+          "expectedVersion"
+        ],
+        "properties": {
+          "enabled": {
+            "type": "boolean"
+          },
+          "loginRequired": {
+            "type": "boolean"
+          },
+          "quotaLimit": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 0
+          },
+          "quotaWindowSeconds": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 1
+          },
+          "consumesQuota": {
+            "type": "boolean"
+          },
+          "allowConcurrent": {
+            "type": "boolean"
+          },
+          "expectedVersion": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "clearQuota": {
+            "type": "boolean",
+            "description": "将当前主体额度重置为不限次数"
+          }
+        },
+        "minProperties": 2,
+        "additionalProperties": false
+      },
+      "ToolAccessPolicy": {
+        "type": "object",
+        "required": [
+          "toolId",
+          "principalType",
+          "enabled",
+          "loginRequired",
+          "consumesQuota",
+          "allowConcurrent",
+          "version"
+        ],
+        "properties": {
+          "toolId": {
+            "type": "string"
+          },
+          "principalType": {
+            "type": "string",
+            "enum": [
+              "GUEST",
+              "USER",
+              "MEMBER",
+              "AD_REWARDED"
+            ]
+          },
+          "enabled": {
+            "type": "boolean"
+          },
+          "loginRequired": {
+            "type": "boolean"
+          },
+          "quotaLimit": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "quotaWindowSeconds": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "consumesQuota": {
+            "type": "boolean"
+          },
+          "allowConcurrent": {
+            "type": "boolean"
+          },
+          "version": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      },
+      "ToolAccessPolicyResponse": {
+        "type": "object",
+        "required": [
+          "code",
+          "message",
+          "data",
+          "requestId"
+        ],
+        "properties": {
+          "code": {
+            "type": "string",
+            "const": "OK"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/ToolAccessPolicy"
+          },
+          "requestId": {
+            "type": "string"
+          }
+        }
       },
       "ToolPolicy": {
         "type": "object",
-        "required": ["enabled", "loginRequired", "guestLimit", "guestLimitWindowSeconds"],
+        "required": [
+          "enabled",
+          "loginRequired",
+          "guestLimit",
+          "guestLimitWindowSeconds"
+        ],
         "properties": {
-          "enabled": { "type": "boolean" },
-          "loginRequired": { "type": "boolean" },
-          "guestLimit": { "type": ["integer", "null"], "minimum": 0 },
-          "guestLimitWindowSeconds": { "type": ["integer", "null"], "minimum": 1 }
+          "enabled": {
+            "type": "boolean"
+          },
+          "loginRequired": {
+            "type": "boolean"
+          },
+          "guestLimit": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 0
+          },
+          "guestLimitWindowSeconds": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 1
+          }
         }
       },
       "Tool": {
         "type": "object",
-        "required": ["toolId", "displayName", "status", "currentVersion", "policy"],
+        "required": [
+          "toolId",
+          "displayName",
+          "status",
+          "currentVersion",
+          "policy",
+          "version",
+          "updatedAt"
+        ],
         "properties": {
-          "toolId": { "type": "string" },
-          "displayName": { "type": "string" },
-          "description": { "type": "string" },
-          "status": { "$ref": "#/components/schemas/ToolStatus" },
-          "currentVersion": { "type": "string" },
-          "inputSchema": { "type": "object", "additionalProperties": true },
-          "outputSchema": { "type": "object", "additionalProperties": true },
-          "policy": { "$ref": "#/components/schemas/ToolPolicy" }
+          "toolId": {
+            "type": "string"
+          },
+          "displayName": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/ToolStatus"
+          },
+          "currentVersion": {
+            "type": "string"
+          },
+          "inputSchema": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "outputSchema": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "policy": {
+            "$ref": "#/components/schemas/ToolPolicy"
+          },
+          "version": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
         }
       },
       "ToolResponse": {
         "type": "object",
-        "required": ["code", "message", "data", "requestId"],
+        "required": [
+          "code",
+          "message",
+          "data",
+          "requestId"
+        ],
         "properties": {
-          "code": { "type": "string", "const": "OK" },
-          "message": { "type": "string" },
-          "data": { "$ref": "#/components/schemas/Tool" },
-          "requestId": { "type": "string" }
+          "code": {
+            "type": "string",
+            "const": "OK"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/Tool"
+          },
+          "requestId": {
+            "type": "string"
+          }
         }
       },
       "ToolListResponse": {
         "type": "object",
-        "required": ["code", "message", "data", "requestId"],
+        "required": [
+          "code",
+          "message",
+          "data",
+          "requestId"
+        ],
         "properties": {
-          "code": { "type": "string", "const": "OK" },
-          "message": { "type": "string" },
+          "code": {
+            "type": "string",
+            "const": "OK"
+          },
+          "message": {
+            "type": "string"
+          },
           "data": {
             "type": "object",
-            "required": ["items", "page", "pageSize", "total"],
+            "required": [
+              "items",
+              "page",
+              "pageSize",
+              "total"
+            ],
             "properties": {
-              "items": { "type": "array", "items": { "$ref": "#/components/schemas/Tool" } },
-              "page": { "type": "integer" },
-              "pageSize": { "type": "integer" },
-              "total": { "type": "integer" }
+              "items": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Tool"
+                }
+              },
+              "page": {
+                "type": "integer"
+              },
+              "pageSize": {
+                "type": "integer"
+              },
+              "total": {
+                "type": "integer"
+              }
             }
           },
-          "requestId": { "type": "string" }
+          "requestId": {
+            "type": "string"
+          }
         }
       },
       "ToolExecuteRequest": {
         "type": "object",
-        "required": ["input", "clientRequestId"],
+        "required": [
+          "input",
+          "clientRequestId"
+        ],
         "properties": {
-          "toolVersion": { "type": "string" },
-          "input": { "type": "object", "additionalProperties": true },
-          "clientRequestId": { "type": "string", "minLength": 1, "maxLength": 128 }
+          "toolVersion": {
+            "type": "string"
+          },
+          "input": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "clientRequestId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
         },
         "additionalProperties": false
       },
       "Usage": {
         "type": "object",
         "properties": {
-          "limit": { "type": ["integer", "null"] },
-          "used": { "type": "integer", "minimum": 0 },
-          "remaining": { "type": ["integer", "null"], "minimum": 0 },
-          "resetAt": { "type": ["string", "null"], "format": "date-time" }
+          "limit": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "used": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "remaining": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 0
+          },
+          "resetAt": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          }
         }
       },
       "ToolExecuteResponse": {
         "type": "object",
-        "required": ["code", "message", "data", "requestId"],
+        "required": [
+          "code",
+          "message",
+          "data",
+          "requestId"
+        ],
         "properties": {
-          "code": { "type": "string", "const": "OK" },
-          "message": { "type": "string" },
+          "code": {
+            "type": "string",
+            "const": "OK"
+          },
+          "message": {
+            "type": "string"
+          },
           "data": {
             "type": "object",
-            "required": ["toolId", "toolVersion", "result", "usage"],
+            "required": [
+              "toolId",
+              "toolVersion",
+              "result",
+              "usage"
+            ],
             "properties": {
-              "toolId": { "type": "string" },
-              "toolVersion": { "type": "string" },
-              "result": { "type": "object", "additionalProperties": true },
-              "usage": { "$ref": "#/components/schemas/Usage" }
+              "toolId": {
+                "type": "string"
+              },
+              "toolVersion": {
+                "type": "string"
+              },
+              "result": {
+                "type": "object",
+                "additionalProperties": true
+              },
+              "usage": {
+                "$ref": "#/components/schemas/Usage"
+              }
             }
           },
-          "requestId": { "type": "string" }
+          "requestId": {
+            "type": "string"
+          }
         }
       },
       "ToolUpsertRequest": {
         "type": "object",
-        "required": ["toolId", "displayName", "currentVersion", "status"],
+        "required": [
+          "toolId",
+          "displayName",
+          "currentVersion",
+          "status"
+        ],
         "properties": {
-          "toolId": { "type": "string" },
-          "displayName": { "type": "string" },
-          "description": { "type": "string" },
-          "currentVersion": { "type": "string" },
-          "status": { "$ref": "#/components/schemas/ToolStatus" },
-          "inputSchema": { "type": "object", "additionalProperties": true },
-          "outputSchema": { "type": "object", "additionalProperties": true }
+          "toolId": {
+            "type": "string"
+          },
+          "displayName": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "currentVersion": {
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/ToolStatus"
+          },
+          "inputSchema": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "outputSchema": {
+            "type": "object",
+            "additionalProperties": true
+          }
         },
         "additionalProperties": false
       },
       "ToolPatchRequest": {
         "type": "object",
-        "required": ["expectedVersion"],
+        "required": [
+          "expectedVersion"
+        ],
         "properties": {
-          "displayName": { "type": "string" },
-          "description": { "type": "string" },
-          "currentVersion": { "type": "string" },
-          "status": { "$ref": "#/components/schemas/ToolStatus" },
-          "inputSchema": { "type": "object", "additionalProperties": true },
-          "outputSchema": { "type": "object", "additionalProperties": true },
-          "expectedVersion": { "type": "integer", "minimum": 0 }
+          "displayName": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "currentVersion": {
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/ToolStatus"
+          },
+          "inputSchema": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "outputSchema": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "expectedVersion": {
+            "type": "integer",
+            "minimum": 0
+          }
         },
         "minProperties": 2,
         "additionalProperties": false
       },
       "ToolPolicyPatch": {
         "type": "object",
-        "required": ["expectedVersion"],
+        "required": [
+          "expectedVersion"
+        ],
         "properties": {
-          "enabled": { "type": "boolean" },
-          "loginRequired": { "type": "boolean" },
-          "guestLimit": { "type": ["integer", "null"], "minimum": 0 },
-          "guestLimitWindowSeconds": { "type": ["integer", "null"], "minimum": 1 },
-          "expectedVersion": { "type": "integer", "minimum": 0 }
+          "enabled": {
+            "type": "boolean"
+          },
+          "loginRequired": {
+            "type": "boolean"
+          },
+          "guestLimit": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 0
+          },
+          "guestLimitWindowSeconds": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 1
+          },
+          "expectedVersion": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "clearGuestQuota": {
+            "type": "boolean",
+            "default": false
+          }
         },
         "minProperties": 2,
         "additionalProperties": false
       },
       "UsageResponse": {
         "type": "object",
-        "required": ["code", "message", "data", "requestId"],
+        "required": [
+          "code",
+          "message",
+          "data",
+          "requestId"
+        ],
         "properties": {
-          "code": { "type": "string", "const": "OK" },
-          "message": { "type": "string" },
+          "code": {
+            "type": "string",
+            "const": "OK"
+          },
+          "message": {
+            "type": "string"
+          },
           "data": {
             "type": "object",
-            "required": ["toolId", "from", "to", "totalExecutions"],
+            "required": [
+              "toolId",
+              "from",
+              "to",
+              "totalExecutions"
+            ],
             "properties": {
-              "toolId": { "type": "string" },
-              "from": { "type": "string", "format": "date-time" },
-              "to": { "type": "string", "format": "date-time" },
-              "totalExecutions": { "type": "integer", "minimum": 0 },
-              "guestExecutions": { "type": "integer", "minimum": 0 },
-              "userExecutions": { "type": "integer", "minimum": 0 }
+              "toolId": {
+                "type": "string"
+              },
+              "from": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "to": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "totalExecutions": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "guestExecutions": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "userExecutions": {
+                "type": "integer",
+                "minimum": 0
+              }
             }
           },
-          "requestId": { "type": "string" }
+          "requestId": {
+            "type": "string"
+          }
         }
       },
       "ErrorResponse": {
         "type": "object",
-        "required": ["code", "message", "requestId"],
+        "required": [
+          "code",
+          "message",
+          "requestId"
+        ],
         "properties": {
-          "code": { "type": "string" },
-          "message": { "type": "string" },
-          "details": { "type": "object", "additionalProperties": true },
-          "requestId": { "type": "string" }
+          "code": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "details": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "requestId": {
+            "type": "string"
+          }
         }
+      },
+      "RegisterRequest": {
+        "type": "object",
+        "required": [
+          "identifier",
+          "password"
+        ],
+        "properties": {
+          "identifier": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "password": {
+            "type": "string",
+            "minLength": 8,
+            "maxLength": 256,
+            "writeOnly": true
+          },
+          "displayName": {
+            "type": "string",
+            "maxLength": 128
+          }
+        },
+        "additionalProperties": false
       }
     },
     "responses": {
@@ -582,45 +1911,121 @@
         "description": "认证成功",
         "content": {
           "application/json": {
-            "schema": { "$ref": "#/components/schemas/LoginResponse" }
+            "schema": {
+              "$ref": "#/components/schemas/LoginResponse"
+            }
           }
         }
       },
       "BadRequest": {
         "description": "请求非法",
-        "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
       },
       "Unauthenticated": {
         "description": "未认证",
-        "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
       },
       "Forbidden": {
         "description": "无权限",
-        "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
       },
       "ToolNotFound": {
         "description": "工具不存在",
-        "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
       },
       "IdempotencyConflict": {
         "description": "幂等冲突",
-        "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
       },
       "QuotaExceeded": {
         "description": "额度耗尽",
-        "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
       },
       "DependencyError": {
         "description": "外部依赖失败",
-        "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
       },
       "ResourceConflict": {
         "description": "资源版本冲突",
-        "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
       },
       "InternalError": {
         "description": "服务端错误",
-        "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      },
+      "ToolNotImplemented": {
+        "description": "工具执行器尚未接入",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      },
+      "ServiceUnavailable": {
+        "description": "依赖服务不可用",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
       }
     }
   }

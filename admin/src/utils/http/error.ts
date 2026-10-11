@@ -141,9 +141,9 @@ export function handleError(error: AxiosError<ErrorResponse>): never {
   }
 
   // 处理 HTTP 状态码错误
-  const message = statusCode
-    ? getErrorMessage(statusCode)
-    : errorMessage || $t('httpMsg.requestFailed')
+  // 优先使用后端契约中的 message，保留 RESOURCE_VERSION_CONFLICT 等可操作信息。
+  const message =
+    errorMessage || (statusCode ? getErrorMessage(statusCode) : $t('httpMsg.requestFailed'))
   throw new HttpError(message, statusCode || ApiStatus.error, {
     data: error.response.data,
     url: requestConfig?.url,

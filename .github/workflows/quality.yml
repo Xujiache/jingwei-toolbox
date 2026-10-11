@@ -19,6 +19,7 @@ jobs:
         with:
           python-version: '3.12'
       - run: python scripts/verify-contract.py
+      - run: python scripts/verify-tool-contracts.py
 
   backend:
     name: Spring Boot skeleton

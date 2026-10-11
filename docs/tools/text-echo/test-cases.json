@@ -1,0 +1,5 @@
+[
+  { "name": "valid", "input": { "value": "hello" }, "expectedOutput": { "result": "hello" } },
+  { "name": "missing-required-field", "input": {}, "expectedError": "TOOL_INPUT_INVALID" },
+  { "name": "reject-extra-field", "input": { "value": "hello", "extra": true }, "expectedError": "TOOL_INPUT_INVALID" }
+]

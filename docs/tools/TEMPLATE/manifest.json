@@ -1,0 +1,18 @@
+{
+  "toolId": "example-tool",
+  "version": "1.0.0",
+  "displayName": "示例工具",
+  "description": "替换为真实工具描述",
+  "category": "example",
+  "icon": "",
+  "executorKey": "example-tool@1.0.0",
+  "executionMode": "SYNC_JSON",
+  "timeoutMs": 10000,
+  "minClientVersion": "1.0.0",
+  "access": {
+    "guest": { "enabled": true, "limit": 3, "windowSeconds": 86400 },
+    "user": { "enabled": true, "limit": null, "windowSeconds": null },
+    "member": { "enabled": false, "limit": null, "windowSeconds": null },
+    "adRewarded": { "enabled": false, "limit": null, "windowSeconds": null }
+  }
+}

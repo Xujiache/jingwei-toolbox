@@ -33,6 +33,17 @@ export const systemRoutes: AppRouteRecord = {
       }
     },
     {
+      path: 'tools',
+      name: 'ToolManagement',
+      component: '/system/tools',
+      meta: {
+        title: 'menus.system.tools',
+        icon: 'ri:tools-line',
+        keepAlive: true,
+        roles: ['R_ADMIN']
+      }
+    },
+    {
       path: 'user-center',
       name: 'UserCenter',
       component: '/system/user-center',

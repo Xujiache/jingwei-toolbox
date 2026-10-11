@@ -1,0 +1,5 @@
+[
+  { "code": "TOOL_INPUT_INVALID", "retryable": false, "description": "输入必须包含 1 到 2000 个字符的 value。" },
+  { "code": "TOOL_QUOTA_EXCEEDED", "retryable": false, "description": "游客额度已用尽。" },
+  { "code": "DEPENDENCY_ERROR", "retryable": true, "description": "平台依赖暂时不可用。" }
+]

@@ -1,0 +1,11 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "example-tool/1.0.0/input",
+  "title": "ExampleToolInput",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "value": { "type": "string", "minLength": 1, "maxLength": 256 }
+  },
+  "required": ["value"]
+}

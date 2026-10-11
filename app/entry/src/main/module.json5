@@ -11,12 +11,29 @@
     "deliveryWithInstall": true,
     "installationFree": false,
     "pages": "$profile:main_pages",
+    "requestPermissions": [
+      {
+        "name": "ohos.permission.INTERNET"
+      }
+    ],
+    "metadata": [
+      {
+        "name": "client_id",
+        "value": "6917618729301329244"
+      },
+      {
+        "name": "app_id",
+        "value": "6917618729301329244"
+      }
+    ],
     "abilities": [
       {
         "name": "EntryAbility",
         "srcEntry": "./ets/entryability/EntryAbility.ets",
         "description": "$string:entry_ability_desc",
         "label": "$string:entry_ability_label",
+        "startWindowIcon": "$media:app_icon",
+        "startWindowBackground": "$color:start_window_background",
         "exported": true,
         "skills": [
           {

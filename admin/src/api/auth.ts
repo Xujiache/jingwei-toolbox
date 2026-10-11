@@ -25,6 +25,8 @@ export function fetchGetUserInfo() {
     userName: principal.displayName || principal.principalType,
     email: '',
     buttons: [],
-    roles: principal.scopes
+    // 管理后台原有路由使用 R_ADMIN/R_SUPER 标记，后端契约使用 ADMIN principal。
+    // 只把真实的 ADMIN 身份映射为 R_ADMIN，不能由前端输入伪造权限。
+    roles: principal.principalType === 'ADMIN' ? ['R_ADMIN', ...principal.scopes] : principal.scopes
   }))
 }

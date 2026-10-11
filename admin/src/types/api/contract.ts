@@ -7,6 +7,7 @@
 export type PrincipalType = 'GUEST' | 'USER' | 'ADMIN'
 
 export type ToolStatus = 'DRAFT' | 'PUBLISHED' | 'DISABLED' | 'DEPRECATED'
+export type ToolVersionStatus = 'DRAFT' | 'TESTING' | 'PUBLISHED' | 'DISABLED' | 'DEPRECATED'
 
 export interface ApiResponse<T> {
   code: 'OK'
@@ -25,6 +26,12 @@ export interface ApiErrorResponse {
 export interface LoginRequest {
   identifier: string
   password: string
+}
+
+export interface RegisterRequest {
+  identifier: string
+  password: string
+  displayName?: string
 }
 
 export interface RefreshRequest {
@@ -62,6 +69,9 @@ export interface ToolDefinition {
   inputSchema?: Record<string, unknown>
   outputSchema?: Record<string, unknown>
   policy: ToolPolicy
+  /** 乐观锁版本，由后台更新接口原样返回。 */
+  version: number
+  updatedAt: string
 }
 
 export interface ToolListData {
@@ -122,6 +132,7 @@ export interface ToolPolicyPatch {
   loginRequired?: boolean
   guestLimit?: number | null
   guestLimitWindowSeconds?: number | null
+  clearGuestQuota?: boolean
   expectedVersion: number
 }
 
@@ -132,4 +143,56 @@ export interface ToolUsageData {
   totalExecutions: number
   guestExecutions?: number
   userExecutions?: number
+}
+
+export interface ToolVersionDefinition {
+  toolId: string
+  toolVersion: string
+  status: ToolVersionStatus
+  inputSchema?: Record<string, unknown>
+  outputSchema?: Record<string, unknown>
+  executorKey: string | null
+  timeoutMs: number
+  minClientVersion?: string | null
+  createdAt: string
+  updatedAt: string
+}
+
+export interface ToolVersionListData {
+  items: ToolVersionDefinition[]
+  total: number
+}
+
+export interface ToolVersionCreateRequest {
+  toolVersion: string
+  inputSchema?: Record<string, unknown>
+  outputSchema?: Record<string, unknown>
+  executorKey?: string
+  timeoutMs?: number
+  minClientVersion?: string
+}
+
+export type ToolPrincipalType = 'GUEST' | 'USER' | 'MEMBER' | 'AD_REWARDED'
+
+export interface ToolAccessPolicy {
+  toolId: string
+  principalType: ToolPrincipalType
+  enabled: boolean
+  loginRequired: boolean
+  quotaLimit: number | null
+  quotaWindowSeconds: number | null
+  consumesQuota: boolean
+  allowConcurrent: boolean
+  version: number
+}
+
+export interface ToolAccessPolicyPatch {
+  enabled?: boolean
+  loginRequired?: boolean
+  quotaLimit?: number | null
+  quotaWindowSeconds?: number | null
+  clearQuota?: boolean
+  consumesQuota?: boolean
+  allowConcurrent?: boolean
+  expectedVersion: number
 }

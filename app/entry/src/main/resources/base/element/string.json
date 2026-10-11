@@ -21,28 +21,16 @@
       "value": "经纬智能工具箱"
     },
     {
-      "name": "tab_tools",
-      "value": "工具箱"
+      "name": "tab_home",
+      "value": "首页"
     },
     {
       "name": "tab_account",
       "value": "我的"
     },
     {
-      "name": "tools_title",
-      "value": "工具箱"
-    },
-    {
-      "name": "tools_empty_desc",
-      "value": "工具目录将在平台接口接入后显示"
-    },
-    {
-      "name": "foundation_notice",
-      "value": "当前为客户端基础框架"
-    },
-    {
       "name": "account_title",
-      "value": "账号与访问"
+      "value": "我的"
     },
     {
       "name": "account_policy_desc",

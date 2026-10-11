@@ -1,0 +1,18 @@
+{
+  "toolId": "text-echo",
+  "version": "1.0.0",
+  "displayName": "文本回显",
+  "description": "平台示例工具：原样返回输入文本。",
+  "category": "示例",
+  "icon": "",
+  "executorKey": "text-echo",
+  "executionMode": "SYNC_JSON",
+  "timeoutMs": 10000,
+  "minClientVersion": "1.0.0",
+  "access": {
+    "guest": { "enabled": true, "limit": 10, "windowSeconds": 86400 },
+    "user": { "enabled": true, "limit": null, "windowSeconds": null },
+    "member": { "enabled": false, "limit": null, "windowSeconds": null },
+    "adRewarded": { "enabled": false, "limit": null, "windowSeconds": null }
+  }
+}

@@ -7,6 +7,10 @@
     {
       "name": "secondary_text",
       "value": "#667085"
+    },
+    {
+      "name": "start_window_background",
+      "value": "#F7F8FA"
     }
   ]
 }
