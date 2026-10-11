@@ -41,7 +41,7 @@ Clash TUN 当时启用，日志能证明其处理过其他回环地址，但尚�
 - 当前联调构建时间：2026-10-11 13:24 UTC。
 - 当前联调构建 SHA-256：`156EC5F226DF3FBD4CC8637944ED4BB69C6CD8D9F2F84AD353F6C93FA378A0B2`
 - 包名：`com.xujiache.jingweitoolbox`；入口：`EntryAbility`；设备类型：`phone, tablet`。
-- HAP 声明最低与目标 API 12。当前登录流程使用 Account Kit `AuthenticationController` + `AuthorizationWithHuaweiIDRequest`（`profile` scope、`serviceauthcode` permission 和 `state` 校验），相关 API 在当前 SDK/API 12 构建中可用；这是 SDK 定义核验，不替代设备实测。
+- HAP 声明最低与目标 API 23（`6.1.0(23)`）。客户端手机导航使用 `HdsTabs` + `HdsTabsFloatingStyle`，通过 `IMMERSIVE`/`ADAPTIVE` 系统材质实现悬浮胶囊；华为账号登录仍使用 Account Kit `AuthenticationController` + `AuthorizationWithHuaweiIDRequest`（`profile` scope、`serviceauthcode` permission 和 `state` 校验）。这是 SDK 定义和构建核验，不替代设备实测。
 - 清单请求权限仅为 `ohos.permission.INTERNET`。
 - ZIP 文件名检查未发现 `.env`、`.p12`、`.pem`、`.key`、`.keystore`；此检查不等于完整内容泄密扫描。
 - 保留编译器对 `EntryAbility.ets` 异常处理的警告，不将警告掩盖为零问题。
@@ -74,7 +74,7 @@ $env:DEVECO_SDK_HOME = 'C:\Program Files\Huawei\DevEco Studio 26\sdk'
 本轮没有扩展修改业务代码，以下不能当作已解决：
 
 - `AccountPanel.logout()`：网络失败时 `ApiClient.logout()` 仍会清除本地会话，但页面跳到异常分支，不执行随后身份刷新，界面可能暂时残留已登录状态。
-- `Index.phoneContent()`：`Tabs` 未绑定 `selectedIndex`；从宽屏“我的”切换至手机布局时，需要检查选中标签、标题和内容一致性。
+- `Index.phoneContent()`：已切换为受 `HdsTabsController` 控制的 `HdsTabs`，手机端和宽屏侧边导航共用 `selectedIndex`；仍需在真机检查断点切换时的选中态和标题一致性。
 - `ApiClient.ensureGuestSession()`：没有合并进行中的创建请求；若两个页面同时初始化，可能发出重复游客会话请求。
 
 这些是源代码审计风险，尚未通过设备复现。后续真机验收必须覆盖失败退出、布局切换、首次初始化并发场景；不能仅以 HAP 构建成功承诺真机不存在问题。

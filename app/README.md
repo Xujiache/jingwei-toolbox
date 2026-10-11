@@ -13,7 +13,7 @@
 
 `oh-package.json5` 仅声明 OHPM 应用依赖，不声明 `@ohos/hvigor` 或 `@ohos/hvigor-ohos-plugin`。本工程使用 DevEco Studio 自带的 Hvigor 构建工具链；构建扩展依赖应放入 `hvigor/hvigor-config.json5`，避免 IDE 同步时向 OHPM 仓库错误请求构建工具包。
 
-当前工程按 API 12 / `5.0.0(12)` 兼容配置初始化；如果实际 DevEco SDK 不同，必须在确认后同步修改 `build-profile.json5` 和文档，不能只改本地配置。
+当前工程使用 HDS Floating Tabs，兼容与目标 API 为 `6.1.0(23)`；该版本是 `HdsTabsFloatingStyle`、`barFloatingStyle` 和系统沉浸式材质参数的最低构建版本。真机系统需要支持 API 23 或更高版本。
 
 仓库已提供 `hvigor/hvigor-config.json5`。如果工作区路径包含中文，DevEco Hvigor 会拒绝构建路径；可将 `app/` 临时复制到只含英文字符的目录后，使用 DevEco 安装目录中的 `hvigorw.bat assembleHap --no-daemon` 构建，产物不回写源码目录。
 

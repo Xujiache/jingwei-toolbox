@@ -9,6 +9,14 @@
       "value": "#667085"
     },
     {
+      "name": "nav_selected",
+      "value": "#2563EB"
+    },
+    {
+      "name": "nav_unselected",
+      "value": "#667085"
+    },
+    {
       "name": "start_window_background",
       "value": "#F7F8FA"
     }

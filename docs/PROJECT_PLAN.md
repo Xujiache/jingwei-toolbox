@@ -11,7 +11,7 @@
 - 后端：Java 21 + Spring Boot 4.1.1
 - 数据库：MySQL 8
 - 管理后台：Vue 3（当前基础模板位于 `admin/`）
-- HarmonyOS 工程：Stage 模型，当前骨架按 API 12 / `5.0.0(12)` 初始化
+- HarmonyOS 工程：Stage 模型，当前使用 HDS Floating Tabs，兼容与目标 API 为 `6.1.0(23)`
 - GitHub：`https://github.com/Xujiache/jingwei-toolbox`
 - 分支：`main` 发布、`develop` 集成、`feature/*` 功能、`fix/*` 修复
 
@@ -121,7 +121,7 @@ scripts/   可重复的构建、检查和契约校验脚本
 ### 阶段 0：契约和骨架
 
 - 确认本目录文档、OpenAPI、错误码和认证方式。
-- 校验 Java 21、Spring Boot 4.1.1、MySQL 8、HarmonyOS API 12 和 Node/pnpm 工具链版本。
+- 校验 Java 21、Spring Boot 4.1.1、MySQL 8、HarmonyOS API 23（`6.1.0(23)`）和 Node/pnpm 工具链版本。
 - 创建 `backend/`、`app/` 的最小工程骨架，但不实现具体工具。
 
 ### 阶段 1：平台基础能力

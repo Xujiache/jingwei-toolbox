@@ -1,7 +1,8 @@
 import { AccountPanel } from '../components/AccountPanel';
-import { OnlineToolCatalog } from '../components/OnlineToolCatalog';
+import { OnlineToolCatalog, ToolSelectionHandler } from '../components/OnlineToolCatalog';
 import { ToolExecutionPanel } from '../components/ToolExecutionPanel';
 import { ToolDefinition } from '../foundation/AppContract';
+import { HdsTabs, HdsTabsController, HdsTabsFloatingStyle, hdsMaterial } from '@kit.UIDesignKit';
 
 @Entry
 @Component
@@ -9,15 +10,41 @@ struct Index {
   @State private selectedIndex: number = 0;
   @State private wideLayout: boolean = false;
   @State private selectedTool: ToolDefinition | null = null;
+  private tabsController: HdsTabsController = new HdsTabsController();
+  private floatingTabsStyle: HdsTabsFloatingStyle = {
+    barWidth: {
+      smallWidth: 220,
+      mediumWidth: 280,
+      largeWidth: 320
+    },
+    barSideMargin: 24,
+    barBottomMargin: 28,
+    gradientMask: {
+      maskColor: '#66F1F3F5',
+      maskHeight: 92
+    },
+    systemMaterialEffect: {
+      materialType: hdsMaterial.MaterialType.IMMERSIVE,
+      materialLevel: hdsMaterial.MaterialLevel.ADAPTIVE
+    },
+    barOpacity: 0.96
+  };
 
   private selectTool(tool: ToolDefinition): void {
     this.selectedTool = tool;
   }
 
+  private selectTab(index: number): void {
+    this.selectedIndex = index;
+    if (!this.wideLayout) {
+      this.tabsController.changeIndex(index);
+    }
+  }
+
   @Builder
   private homeContent() {
     if (this.selectedTool === null) {
-      OnlineToolCatalog({ onToolSelected: (tool: ToolDefinition) => this.selectTool(tool) })
+      OnlineToolCatalog({ selection: new ToolSelectionHandler((tool: ToolDefinition) => this.selectTool(tool)) })
     } else {
       Column({ space: 8 }) {
         Row() {
@@ -76,23 +103,44 @@ struct Index {
 
   @Builder
   private phoneContent() {
-    Tabs({ barPosition: BarPosition.End }) {
+    HdsTabs({ controller: this.tabsController, index: this.selectedIndex }) {
       TabContent() {
         this.homeContent()
       }
-      .tabBar({ icon: $r('app.media.ic_home'), text: $r('app.string.tab_home') })
+      .tabBar(BottomTabBarStyle.of($r('app.media.ic_home'), $r('app.string.tab_home'))
+        .labelStyle({
+          selectedColor: $r('app.color.nav_selected'),
+          unselectedColor: $r('app.color.nav_unselected')
+        })
+        .iconStyle({
+          selectedColor: $r('app.color.nav_selected'),
+          unselectedColor: $r('app.color.nav_unselected')
+        }))
 
       TabContent() {
         AccountPanel()
       }
-      .tabBar({ icon: $r('app.media.ic_person'), text: $r('app.string.tab_account') })
+      .tabBar(BottomTabBarStyle.of($r('app.media.ic_person'), $r('app.string.tab_account'))
+        .labelStyle({
+          selectedColor: $r('app.color.nav_selected'),
+          unselectedColor: $r('app.color.nav_unselected')
+        })
+        .iconStyle({
+          selectedColor: $r('app.color.nav_selected'),
+          unselectedColor: $r('app.color.nav_unselected')
+        }))
     }
     .barMode(BarMode.Fixed)
+    .barOverlap(true)
+    .vertical(false)
+    .barPosition(BarPosition.End)
+    .barFloatingStyle(this.floatingTabsStyle)
     .onChange((index: number) => {
       this.selectedIndex = index;
     })
     .layoutWeight(1)
     .width('100%')
+    .height('100%')
   }
 
   @Builder
@@ -141,7 +189,7 @@ struct Index {
     .backgroundColor(this.selectedIndex === index ? '#EAF2FF' : Color.Transparent)
     .borderRadius(12)
     .onClick(() => {
-      this.selectedIndex = index;
+      this.selectTab(index);
     })
   }
 }

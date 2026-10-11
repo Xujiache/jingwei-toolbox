@@ -1,9 +1,21 @@
 import { ApiClient, ApiClientError } from '../foundation/ApiClient';
 import { ToolDefinition } from '../foundation/AppContract';
 
+export class ToolSelectionHandler {
+  callback: (tool: ToolDefinition) => void;
+
+  constructor(callback: (tool: ToolDefinition) => void) {
+    this.callback = callback;
+  }
+
+  select(tool: ToolDefinition): void {
+    this.callback(tool);
+  }
+}
+
 @Component
 export struct OnlineToolCatalog {
-  @Prop onToolSelected: (tool: ToolDefinition) => void = (_tool: ToolDefinition) => {};
+  @Prop selection: ToolSelectionHandler = new ToolSelectionHandler((_tool: ToolDefinition) => {});
   @State private tools: ToolDefinition[] = [];
   @State private query: string = '';
   @State private loading: boolean = false;
@@ -155,7 +167,7 @@ export struct OnlineToolCatalog {
                   .backgroundColor(Color.White)
                   .borderRadius(16)
                   .onClick(() => {
-                    this.onToolSelected(tool);
+                    this.selection.select(tool);
                   })
                 }
               }, (tool: ToolDefinition) => tool.toolId)
